@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📈 Stock Dashboard
 
-## Getting Started
+A real-time stock market dashboard built with **Next.js 15**, **TypeScript**, **TanStack Query**, and **Recharts**.
 
-First, run the development server:
+> ⚠️ Data is sourced from Yahoo Finance (free tier) — prices may have a 15–20 minute delay.
+
+## ✨ Features
+
+- 🔍 **Stock Search** — Search any stock by ticker symbol (e.g. AAPL, TSLA)
+- 📊 **Interactive Chart** — Area chart with selectable timeframes (1D / 1W / 1M / 3M / 1Y)
+- 💼 **Portfolio Cards** — Overview of selected portfolio stocks with price and return
+- 👁️ **Watchlist** — Track multiple stocks side-by-side with live prices
+- ⚡ **Auto-refresh** — Data refetches automatically (every 5 min for intraday, 1 hr for longer periods)
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Data Fetching | TanStack Query v5 |
+| Chart | Recharts |
+| Data Source | yahoo-finance2 |
+| Styling | Tailwind CSS v4 |
+| Icons | lucide-react |
+| UI Components | shadcn/ui |
+
+## 🚀 Getting Started
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── api/stock/route.ts    # API Route — fetches stock data
+│   ├── layout.tsx            # Root layout
+│   └── page.tsx              # Main dashboard page
+├── components/
+│   ├── Sidebar.tsx           # Navigation sidebar
+│   ├── StockCard.tsx         # Stock info + timeframe selector
+│   ├── StockChart.tsx        # Recharts area chart
+│   ├── PortfolioCards.tsx    # Portfolio overview cards
+│   └── Watchlist.tsx         # Watchlist panel
+├── hooks/
+│   └── useStockData.ts       # TanStack Query custom hook
+├── lib/
+│   ├── stock.service.ts      # Yahoo Finance service layer
+│   └── formatters.ts         # Price/date formatting utilities
+├── providers/
+│   └── QueryProvider.tsx     # TanStack Query client provider
+└── types/
+    └── stock.ts              # TypeScript interfaces
+```
 
-## Learn More
+## 📡 API
 
-To learn more about Next.js, take a look at the following resources:
+```
+GET /api/stock?symbol=AAPL&timeframe=1D
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Parameter | Type | Options |
+|-----------|------|---------|
+| `symbol` | string | Any valid ticker (AAPL, TSLA, GOOGL...) |
+| `timeframe` | string | `1D` `1W` `1M` `3M` `1Y` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Deploy
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployed on **Vercel** — [View Live](#)
