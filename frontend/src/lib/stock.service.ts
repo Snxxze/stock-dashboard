@@ -4,16 +4,19 @@ import type { Timeframe, StockData } from "@/types/stock";
 // สร้าง instance ใหม่ตามที่ library แนะนำ
 const yf = new YahooFinance();
 
+const cache = new Map<string, { data: StockData; timestamp: number }>();
+const CACHE_DURATION = 60 * 1000; // เก็บไว้ 60 วินาที
+
 function resolveTimeframe(timeframe: Timeframe) {
   const now = new Date();
   const period1 = new Date();
   let interval: "5m" | "30m" | "1d" | "1wk";
 
   switch (timeframe) {
-    case "1D": interval = "5m";  period1.setDate(now.getDate() - 1); break;
+    case "1D": interval = "5m"; period1.setDate(now.getDate() - 1); break;
     case "1W": interval = "30m"; period1.setDate(now.getDate() - 7); break;
-    case "1M": interval = "1d";  period1.setDate(now.getDate() - 30); break;
-    case "3M": interval = "1d";  period1.setDate(now.getDate() - 90); break;
+    case "1M": interval = "1d"; period1.setDate(now.getDate() - 30); break;
+    case "3M": interval = "1d"; period1.setDate(now.getDate() - 90); break;
     case "1Y": interval = "1wk"; period1.setFullYear(now.getFullYear() - 1); break;
     default: throw new Error("INVALID_TIMEFRAME");
   }
@@ -25,6 +28,14 @@ export async function getStockData(
   symbol: string,
   timeframe: Timeframe
 ): Promise<StockData> {
+  const cacheKey = `${symbol}-${timeframe}`;
+  const cached = cache.get(cacheKey);
+
+  // ถ้ามีใน Cache และยังไม่หมดอายุ -> ส่งคืนทันที
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+
   if (!/^[A-Z0-9.\-]+$/.test(symbol)) {
     throw new Error("INVALID_SYMBOL");
   }
@@ -50,7 +61,7 @@ export async function getStockData(
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
 
-    return {
+    const data: StockData = {
       symbol: quote.symbol,
       name: quote.longName || quote.shortName || quote.symbol,
       price: quote.regularMarketPrice ?? 0,
@@ -63,8 +74,32 @@ export async function getStockData(
       chart,
     };
 
+    // เก็บลง Cache ก่อนส่งกลับ
+    cache.set(cacheKey, { data, timestamp: Date.now() });
+    return data;
+
   } catch (err) {
     console.error("Yahoo Finance Error:", err);
     throw new Error("YAHOO_API_ERROR");
   }
+}
+
+// ฟังก์ชันสำหรับดึงข้อมูลแบบหลายตัวพร้อมกัน จะได้ลดการดึงหลาย request
+export async function getBatchStockData(
+  symbols: string[],
+  timeframe: Timeframe
+): Promise<Record<string, StockData>> {
+  const results: Record<string, StockData> = {};
+
+  await Promise.all(
+    symbols.map(async (symbol) => {
+      try {
+        results[symbol] = await getStockData(symbol, timeframe);
+      } catch (err) {
+        console.error(`Batch fetch failed for ${symbol}`);
+      }
+    })
+  );
+
+  return results;
 }

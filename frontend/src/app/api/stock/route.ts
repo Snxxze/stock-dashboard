@@ -1,15 +1,26 @@
 import { NextResponse } from "next/server";
-import { getStockData } from "@/lib/stock.service";
+import { getStockData, getBatchStockData } from "@/lib/stock.service";
 import { Timeframe } from "@/types/stock";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
-  const symbol = searchParams.get("symbol") || "AAPL";
+  const symbol = searchParams.get("symbol");
+  const symbolsRaw = searchParams.get("symbols");
   const timeframe = (searchParams.get("timeframe") || "1D") as Timeframe;
 
   try {
-    const data = await getStockData(symbol, timeframe);
+    // กรณีที่ขอมาหลายตัว
+    if (symbolsRaw) {
+      const symbols = symbolsRaw.split(",").map(s => s.trim().toUpperCase());
+      const data = await getBatchStockData(symbols, timeframe);
+      return NextResponse.json(data, {
+        headers: { "Cache-Control": "s-maxage=10, stale-while-revalidate=30" },
+      });
+    }
+
+    // กรณีที่ขอมาตัวเดียว
+    const data = await getStockData(symbol || "AAPL", timeframe);
 
     return NextResponse.json(data, {
       headers: {
