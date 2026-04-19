@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { useStockData } from "@/hooks/useStockData";
 import type { Timeframe } from "@/types/stock";
-import { StockCard } from "@/components/StockCard";
+import { StockCard, StockCardSkeleton } from "@/components/StockCard";
 import { Watchlist } from "@/components/Watchlist";
 import { PortfolioCards } from "@/components/PortfolioCards";
 
 export default function Home() {
   const [symbol, setSymbol] = useState("AAPL");
-  const [timeframe, setTimeframe] = useState<Timeframe>("1D");
+  const [timeframe, setTimeframe] = useState<Timeframe>("1W");
   const { data, isLoading, isError, refetch } = useStockData(symbol, timeframe);
 
   return (
@@ -44,20 +44,22 @@ export default function Home() {
           <div className="flex gap-6">
             {/* Chart */}
             <div className="flex-1 bg-white rounded-2xl p-6 border border-gray-100 min-h-96">
-              {isLoading && <p className="text-gray-400">Loading...</p>}
-              {isError && (
+              {isLoading ? (
+                <StockCardSkeleton/>
+
+              ) : isError ? (
                 <div>
                   <p className="text-red-500">Something went wrong</p>
                   <button onClick={() => refetch()} className="text-sm text-blue-500 mt-2 underline">Retry</button>
                 </div>
-              )}
-              {data && (
+
+              ) : data ? (
                 <StockCard 
                   data={data}
                   timeframe={timeframe}
                   onTimeframeChange={setTimeframe}
                 />
-              )}
+              ) : null}
             </div>
 
             {/* Watchlist */}

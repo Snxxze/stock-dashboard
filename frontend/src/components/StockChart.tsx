@@ -11,6 +11,7 @@ import {
 import type { ChartDataPoint } from "@/types/stock";
 import { formatPrice, formatChartDate } from "@/lib/formatters";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface StockChartProps {
   data: ChartDataPoint[];
@@ -18,12 +19,12 @@ interface StockChartProps {
 }
 
 export function StockChart({ data, isPositive }: StockChartProps) {
-  const color = isPositive ? "#22c55e" : "#ef4444"; // green-500 / red-500
+  const color = isPositive ? "#22c55e" : "#ef4444";
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
-  if (!mounted) return <div className="h-48 mt-4 bg-gray-50 rounded-xl animate-pulse" />;
+  if (!mounted) return <Skeleton className="h-48 mt-4 w-full rounded-xl" />;
 
   return (
     <div className="w-full min-w-0 mt-4">

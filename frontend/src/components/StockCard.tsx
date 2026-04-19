@@ -3,6 +3,7 @@
 import type { StockData, Timeframe } from "@/types/stock";
 import { formatPrice, formatChange, formatVolume } from "@/lib/formatters";
 import { StockChart } from "./StockChart";
+import { Skeleton } from "./ui/skeleton";
 
 interface StockCardProps {
   data: StockData;
@@ -79,6 +80,44 @@ export function StockCard({ data, timeframe, onTimeframeChange }: StockCardProps
           </div>
         </div>
 
+      </div>
+    </div>
+  );
+}
+
+export function StockCardSkeleton() {
+  return (
+    <div>
+      {/* ชื่อหุ้น + ราคา */}
+      <div className="flex justify-between items-start mb-6">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-40" /> 
+          <Skeleton className="h-4 w-20" /> 
+        </div>
+        <div className="text-right space-y-2">
+          <Skeleton className="h-10 w-32 ml-auto" />
+          <Skeleton className="h-4 w-24 ml-auto" /> 
+        </div>
+      </div>
+
+      {/* ปุ่ม Timeframe */}
+      <div className="flex gap-2 mb-6">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Skeleton key={i} className="h-8 w-12 rounded-lg" />
+        ))}
+      </div>
+
+      {/* พื้นที่กราฟ */}
+      <Skeleton className="h-64 w-full rounded-xl mb-6" />
+
+      {/* Stats */}
+      <div className="mt-4 pt-4 border-t border-gray-100">
+        <Skeleton className="h-3 w-48 mb-4" />
+        <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-2"><Skeleton className="h-3 w-10" /><Skeleton className="h-5 w-20" /></div>
+          <div className="space-y-2"><Skeleton className="h-3 w-10" /><Skeleton className="h-5 w-20" /></div>
+          <div className="space-y-2"><Skeleton className="h-3 w-10" /><Skeleton className="h-5 w-20" /></div>
+        </div>
       </div>
     </div>
   );
