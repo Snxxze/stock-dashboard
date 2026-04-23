@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getStockData, getBatchStockData } from "@/services/stock/stock.service";
 import { Timeframe } from "@/features/stock/types";
 
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const timeframe = (searchParams.get("timeframe") || "1D") as Timeframe;
 
   try {
-    // à¸à¸£à¸“à¸µà¸—à¸µà¹ˆà¸‚à¸­à¸¡à¸²à¸«à¸¥à¸²à¸¢à¸•à¸±à¸§
+    // กรณีที่ขอมาหลายตัว
     if (symbolsRaw) {
       const symbols = symbolsRaw.split(",").map(s => s.trim().toUpperCase());
       const data = await getBatchStockData(symbols, timeframe);
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       });
     }
 
-    // à¸à¸£à¸“à¸µà¸—à¸µà¹ˆà¸‚à¸­à¸¡à¸²à¸•à¸±à¸§à¹€à¸”à¸µà¸¢à¸§
+    // กรณีที่ขอมาตัวเดียว
     const data = await getStockData(symbol || "AAPL", timeframe);
 
     return NextResponse.json(data, {

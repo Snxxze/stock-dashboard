@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { User } from "lucide-react";
 import { useState } from "react";
 import { Sidebar } from "@/features/dashboard/components/Sidebar";
 import { useStockData } from "@/features/stock/hooks/useStockData";
@@ -32,7 +33,9 @@ export default function Home() {
             }}
             className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-gray-400"
           />
-          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm cursor-pointer">ðŸ‘¤</div>
+          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
+            <User className="w-4 h-4 text-gray-500" />
+          </div>
         </header>
 
         {/* Main */}

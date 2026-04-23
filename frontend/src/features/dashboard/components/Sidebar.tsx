@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   Home,
@@ -69,7 +69,7 @@ export function Sidebar() {
             <p className="text-xl font-bold">{formatPrice(totalValue)}</p>
             <p className={`text-sm mt-1 flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
               {isPositive ? "+" : ""}{returnPercent.toFixed(2)}% 
-              {isPositive ? "â†‘" : "â†“"}
+              {isPositive ? "↑" : "↓"}
             </p>
           </>
         )}
