@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   AreaChart,
@@ -8,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import type { ChartDataPoint } from "@/types/stock";
+import type { ChartDataPoint } from "@/features/stock/types";
 import { formatPrice, formatChartDate } from "@/lib/formatters";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -78,3 +78,4 @@ export function StockChart({ data, isPositive }: StockChartProps) {
     </div>
   );
 }
+

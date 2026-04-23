@@ -1,3 +1,5 @@
+﻿"use client"
+
 import {
   Home,
   LayoutDashboard,
@@ -8,6 +10,11 @@ import {
   Phone,
   Users,
 } from "lucide-react";
+import { usePortfolio } from "@/features/portfolio/hooks/usePortfolio";
+import { useBatchStockData } from "@/features/stock/hooks/useStockData";
+import { formatPrice } from "@/lib/formatters";
+import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
 
 const NAV_ITEMS = [
   { icon: Home,            label: "Home",       active: false },
@@ -18,6 +25,29 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar() {
+  const { portfolio = [], symbols = [], isLoading: isPortfolioLoading } = usePortfolio();
+  const { data: batchData, isLoading: isBatchLoading } = useBatchStockData(symbols, "1D");
+
+  const isLoading = isPortfolioLoading || isBatchLoading;
+
+  // Calculate real total investment
+  let totalValue = 0;
+  let totalCost = 0;
+
+  if (!isLoading && batchData) {
+    portfolio.forEach(item => {
+      const stock = batchData[item.symbol];
+      if (stock) {
+        totalValue += item.shares * stock.price;
+        totalCost += item.shares * item.avgCost;
+      }
+    });
+  }
+
+  const returnAmount = totalValue - totalCost;
+  const returnPercent = totalCost > 0 ? (returnAmount / totalCost) * 100 : 0;
+  const isPositive = returnAmount >= 0;
+
   return (
     <aside className="w-56 bg-white border-r border-gray-100 flex flex-col p-6 shrink-0">
       {/* Logo */}
@@ -25,11 +55,24 @@ export function Sidebar() {
         <span className="font-bold text-lg">Stock Dash</span>
       </div>
 
-      {/* Total Investment Card mock ไว้ก่อน*/}
-      <div className="bg-black text-white rounded-2xl p-4 mb-8">
+      {/* Total Investment Card */}
+      <div className="bg-black text-white rounded-2xl p-4 mb-8 flex-shrink-0">
         <p className="text-xs text-gray-400 mb-1">Total Investment</p>
-        <p className="text-xl font-bold">$5,380.90</p>
-        <p className="text-green-400 text-sm mt-1">+18.10% ↑</p>
+        
+        {isLoading ? (
+          <div className="space-y-2 mt-2">
+            <Skeleton className="h-6 w-24 bg-gray-800" />
+            <Skeleton className="h-4 w-16 bg-gray-800" />
+          </div>
+        ) : (
+          <>
+            <p className="text-xl font-bold">{formatPrice(totalValue)}</p>
+            <p className={`text-sm mt-1 flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+              {isPositive ? "+" : ""}{returnPercent.toFixed(2)}% 
+              {isPositive ? "â†‘" : "â†“"}
+            </p>
+          </>
+        )}
       </div>
 
       {/* Navigation */}
@@ -65,3 +108,4 @@ export function Sidebar() {
     </aside>
   );
 }
+

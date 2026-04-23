@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import type { StockData, Timeframe } from "@/types/stock";
+﻿import { useQuery } from "@tanstack/react-query";
+import type { StockData, Timeframe } from "@/features/stock/types";
 import { apiClient } from "@/lib/api-client";
 
 // ดึงข้อมูลจาก API
@@ -38,3 +38,4 @@ export function useBatchStockData(symbols: string[], timeframe: Timeframe) {
     enabled: symbols.length > 0,
   });
 }
+

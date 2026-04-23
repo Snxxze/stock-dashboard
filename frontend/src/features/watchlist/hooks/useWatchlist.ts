@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { storage } from "@/lib/storage.provider";
+import { storage } from "@/services/storage/storage.provider";
 
 // ใช้จัดการรายการหุ้นที่ติดตาม
 export function useWatchlist() {

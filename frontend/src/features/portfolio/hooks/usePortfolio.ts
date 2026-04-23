@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { storage } from "@/lib/storage.provider";
-import type { PortfolioItem } from "@/types/portfolio";
+import { storage } from "@/services/storage/storage.provider";
+import type { PortfolioItem } from "@/features/portfolio/types";
 
 // usePortfolio — จัดการ portfolio ของ user
 // ตอนนี้ใช้ localStorage อนาคต swap เป็น backend ที่ storage.provider.ts
@@ -51,3 +51,4 @@ export function usePortfolio() {
     removeStock: removeMutation.mutate,
   };
 }
+
