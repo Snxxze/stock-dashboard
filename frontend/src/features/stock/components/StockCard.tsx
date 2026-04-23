@@ -1,9 +1,10 @@
-"use client"
+﻿"use client"
 
-import type { StockData, Timeframe } from "@/types/stock";
+import type { StockData, Timeframe } from "@/features/stock/types";
 import { formatPrice, formatChange, formatVolume } from "@/lib/formatters";
 import { StockChart } from "./StockChart";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 interface StockCardProps {
   data: StockData;
@@ -25,8 +26,9 @@ export function StockCard({ data, timeframe, onTimeframeChange }: StockCardProps
         </div>
         <div className="text-right">
           <p className="text-3xl font-bold">{formatPrice(data.price)}</p>
-          <p className={`text-sm font-medium mt-1 ${isPositive ? "text-green-500" : "text-red-500"}`}>
-            {isPositive ? "▲" : "▼"} {formatChange(data.change, data.changePercent)}
+          <p className={`text-sm font-medium mt-1 flex items-center justify-end gap-1 ${isPositive ? "text-green-500" : "text-red-500"}`}>
+            {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />} 
+            {formatChange(data.change, data.changePercent)}
           </p>
         </div>
       </div>
@@ -59,7 +61,7 @@ export function StockCard({ data, timeframe, onTimeframeChange }: StockCardProps
             weekday: "short", month: "short", day: "numeric" 
           })}
           <span className="text-gray-300 ml-2">
-            Updated {new Date().toLocaleTimeString("en-US", { 
+            Updated {new Date(data.chart.length > 0 ? data.chart[data.chart.length - 1].timestamp : Date.now()).toLocaleTimeString("en-US", { 
               hour: "2-digit", minute: "2-digit" 
             })}
           </span>

@@ -1,12 +1,13 @@
-"use client";
+﻿"use client";
 
+import { User } from "lucide-react";
 import { useState } from "react";
-import { Sidebar } from "@/components/Sidebar";
-import { useStockData } from "@/hooks/useStockData";
-import type { Timeframe } from "@/types/stock";
-import { StockCard, StockCardSkeleton } from "@/components/StockCard";
-import { Watchlist } from "@/components/Watchlist";
-import { PortfolioCards } from "@/components/PortfolioCards";
+import { Sidebar } from "@/features/dashboard/components/Sidebar";
+import { useStockData } from "@/features/stock/hooks/useStockData";
+import type { Timeframe } from "@/features/stock/types";
+import { StockCard, StockCardSkeleton } from "@/features/stock/components/StockCard";
+import { Watchlist } from "@/features/watchlist/components/Watchlist";
+import { PortfolioCards } from "@/features/portfolio/components/PortfolioCards";
 
 export default function Home() {
   const [symbol, setSymbol] = useState("AAPL");
@@ -32,7 +33,9 @@ export default function Home() {
             }}
             className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-gray-400"
           />
-          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm cursor-pointer">👤</div>
+          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
+            <User className="w-4 h-4 text-gray-500" />
+          </div>
         </header>
 
         {/* Main */}
@@ -72,3 +75,4 @@ export default function Home() {
     </div>
   );
 }
+

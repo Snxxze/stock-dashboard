@@ -1,5 +1,5 @@
-import YahooFinance from "yahoo-finance2";
-import type { Timeframe, StockData } from "@/types/stock";
+﻿import YahooFinance from "yahoo-finance2";
+import type { Timeframe, StockData } from "@/features/stock/types";
 
 // สร้าง instance ใหม่ตามที่ library แนะนำ
 const yf = new YahooFinance();
@@ -103,3 +103,4 @@ export async function getBatchStockData(
 
   return results;
 }
+

@@ -1,4 +1,4 @@
-import type { PortfolioItem, WatchlistItem, UserPreferences } from "@/types/portfolio";
+﻿import type { PortfolioItem, WatchlistItem, UserPreferences } from "@/features/portfolio/types";
 
 // Interface หลัก — ทุก adapter (localStorage, backend) ต้อง implement ตาม
 // เมื่อมี backend → สร้าง class ใหม่ implement interface นี้ → swap ได้เลย
@@ -40,3 +40,4 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   defaultTimeframe: "1D",
   theme: "light",
 };
+

@@ -1,4 +1,4 @@
-import type { PortfolioItem, WatchlistItem, UserPreferences } from "@/types/portfolio";
+﻿import type { PortfolioItem, WatchlistItem, UserPreferences } from "@/features/portfolio/types";
 import {
   IStorageService,
   DEFAULT_PORTFOLIO,
@@ -113,3 +113,4 @@ export class LocalStorageAdapter implements IStorageService {
     writeStorage(KEYS.PREFERENCES, { ...current, ...prefs });
   }
 }
+

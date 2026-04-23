@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getStockData, getBatchStockData } from "@/lib/stock.service";
-import { Timeframe } from "@/types/stock";
+import { getStockData, getBatchStockData } from "@/services/stock/stock.service";
+import { Timeframe } from "@/features/stock/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
