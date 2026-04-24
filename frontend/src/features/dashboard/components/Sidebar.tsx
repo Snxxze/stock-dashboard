@@ -9,24 +9,29 @@ import {
   Settings,
   Phone,
   Users,
+  Construction,
 } from "lucide-react";
 import { usePortfolio } from "@/features/portfolio/hooks/usePortfolio";
 import { useBatchStockData } from "@/features/stock/hooks/useStockData";
 import { formatPrice } from "@/lib/formatters";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
-  { icon: Home, label: "Home", active: false },
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Wallet, label: "Wallet", active: false },
-  { icon: Newspaper, label: "News", active: false },
-  { icon: TrendingUp, label: "Stocks", active: false },
+  { icon: Home, label: "Home", href: "/", isImplemented: true },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard", isImplemented: true },
+  { icon: Wallet, label: "Wallet", href: "/wallet", isImplemented: false },
+  { icon: Newspaper, label: "News", href: "/news", isImplemented: false },
+  { icon: TrendingUp, label: "Stocks", href: "/stocks", isImplemented: false },
 ];
 
 export function Sidebar() {
   const { portfolio = [], symbols = [], isLoading: isPortfolioLoading } = usePortfolio();
   const { data: batchData, isLoading: isBatchLoading } = useBatchStockData(symbols, "1D");
+  const pathname = usePathname();
+  const router = useRouter();
 
   const isLoading = isPortfolioLoading || isBatchLoading;
 
@@ -47,6 +52,19 @@ export function Sidebar() {
   const returnAmount = totalValue - totalCost;
   const returnPercent = totalCost > 0 ? (returnAmount / totalCost) * 100 : 0;
   const isPositive = returnAmount >= 0;
+
+  const handleNavClick = (item: typeof NAV_ITEMS[0]) => {
+    if (item.isImplemented) {
+      router.push(item.href);
+
+    } else {
+      toast("ยังไม่เปิดให้ใช้งาน", {
+        description: `ฟีเจอร์ ${item.label} กำลังอยู่ระหว่างการพัฒนา`,
+        icon: <Construction className="w-4 h-4 text-amber-500" />,
+      });
+      
+    }
+  };
 
   return (
     <aside className="w-56 bg-white border-r border-gray-100 flex flex-col p-6 shrink-0">
@@ -77,19 +95,25 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-col gap-1 text-sm">
-        {NAV_ITEMS.map(({ icon: Icon, label, active }) => (
-          <a
-            key={label}
-            href="#"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${active
-                ? "bg-gray-100 font-medium text-black"
-                : "text-gray-400 hover:bg-gray-50 hover:text-gray-700"
+        {NAV_ITEMS.map((item) => {
+          const isActive = pathname === item.href;
+
+          return (
+            <button
+              key={item.label}
+              onClick={() => handleNavClick(item)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                isActive
+                  ? "bg-blue-50 text-blue-600 font-semibold"
+                  : "text-gray-500 hover:bg-gray-50"
               }`}
-          >
-            <Icon size={16} />
-            {label}
-          </a>
-        ))}
+            >
+              <item.icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400"}`} />
+              <span>{item.label}</span>
+
+            </button>
+          )
+        })}
       </nav>
 
       {/* Bottom nav */}
