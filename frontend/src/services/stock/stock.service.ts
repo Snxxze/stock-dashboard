@@ -1,4 +1,4 @@
-﻿import YahooFinance from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
 import type { Timeframe, StockData } from "@/features/stock/types";
 
 // สร้าง instance ใหม่ตามที่ library แนะนำ
@@ -36,7 +36,7 @@ export async function getStockData(
     return cached.data;
   }
 
-  if (!/^[A-Z0-9.\-]+$/.test(symbol)) {
+  if (!/^[A-Za-z0-9.\-\^=]+$/.test(symbol)) {
     throw new Error("INVALID_SYMBOL");
   }
 
@@ -104,3 +104,59 @@ export async function getBatchStockData(
   return results;
 }
 
+// ฟังก์ชันสำหรับดึงหุ้นที่กำลังมาแรง 4 ตัวแรกในตลาดอเมริกา
+export async function getTrendingStocks() {
+  try {
+    const trending = await yf.trendingSymbols("US");
+
+    // ดึง 10 ตัวแรก สำหรับทำ Carousel
+    const symbols = trending.quotes.slice(0, 10).map(q => q.symbol);
+    return await getBatchStockData(symbols, "1D");
+
+  } catch (err) {
+    console.error("Trending Error:", err);
+    return {};
+  }
+}
+
+// ฟังก์ชันสำหรับดึงข่าวการลงทุน
+export async function getMarketNews() {
+  try {
+    const queries = ["S&P 500", "Nasdaq", "Dow Jones"];
+
+    const results = await Promise.all(
+      queries.map((q) =>
+        yf.search(q, { newsCount: 10 }).catch((err) => {
+          console.error(`Fetch news failed for ${q}:`, err.message);
+          return { news: [] };
+        })
+      )
+    );
+
+    const merged = results.flatMap((r) => r.news || []);
+
+    const unique = Array.from(
+      new Map(merged.map((n) => [n.link, n])).values()
+    );
+
+    const sorted = unique.sort((a, b) => {
+      const timeA = a.providerPublishTime ? new Date(a.providerPublishTime).getTime() : 0;
+      const timeB = b.providerPublishTime ? new Date(b.providerPublishTime).getTime() : 0;
+      return timeB - timeA;
+    });
+
+    return sorted.slice(0, 10).map((n) => ({
+      title: n.title,
+      url: n.link,
+      source: n.publisher,
+      time: n.providerPublishTime,
+      image:
+        n.thumbnail?.resolutions?.[0]?.url ||
+        n.thumbnail?.resolutions?.[1]?.url ||
+        null,
+    }));
+  } catch (err) {
+    console.error("Yahoo news error:", err);
+    return [];
+  }
+}

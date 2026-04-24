@@ -17,11 +17,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 
 const NAV_ITEMS = [
-  { icon: Home,            label: "Home",       active: false },
-  { icon: LayoutDashboard, label: "Dashboard",  active: true  },
-  { icon: Wallet,          label: "Wallet",     active: false },
-  { icon: Newspaper,       label: "News",       active: false },
-  { icon: TrendingUp,      label: "Stocks",     active: false },
+  { icon: Home, label: "Home", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", active: true },
+  { icon: Wallet, label: "Wallet", active: false },
+  { icon: Newspaper, label: "News", active: false },
+  { icon: TrendingUp, label: "Stocks", active: false },
 ];
 
 export function Sidebar() {
@@ -58,7 +58,7 @@ export function Sidebar() {
       {/* Total Investment Card */}
       <div className="bg-black text-white rounded-2xl p-4 mb-8 flex-shrink-0">
         <p className="text-xs text-gray-400 mb-1">Total Investment</p>
-        
+
         {isLoading ? (
           <div className="space-y-2 mt-2">
             <Skeleton className="h-6 w-24 bg-gray-800" />
@@ -68,7 +68,7 @@ export function Sidebar() {
           <>
             <p className="text-xl font-bold">{formatPrice(totalValue)}</p>
             <p className={`text-sm mt-1 flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-              {isPositive ? "+" : ""}{returnPercent.toFixed(2)}% 
+              {isPositive ? "+" : ""}{returnPercent.toFixed(2)}%
               {isPositive ? "↑" : "↓"}
             </p>
           </>
@@ -81,11 +81,10 @@ export function Sidebar() {
           <a
             key={label}
             href="#"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-              active
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${active
                 ? "bg-gray-100 font-medium text-black"
                 : "text-gray-400 hover:bg-gray-50 hover:text-gray-700"
-            }`}
+              }`}
           >
             <Icon size={16} />
             {label}
