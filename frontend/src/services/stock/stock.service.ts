@@ -1,5 +1,5 @@
 import YahooFinance from "yahoo-finance2";
-import type { Timeframe, StockData } from "@/features/stock/types";
+import type { Timeframe, StockData, MarketNewsItem } from "@/features/stock/types";
 
 // สร้าง instance ใหม่ตามที่ library แนะนำ
 const yf = new YahooFinance();
@@ -135,6 +135,11 @@ export async function getMarketNews() {
 
     const merged = results.flatMap((r) => r.news || []);
 
+    if (merged.length === 0) {
+      
+      throw new Error("No news found from Yahoo Finance APIs.");
+    }
+
     const unique = Array.from(
       new Map(merged.map((n) => [n.link, n])).values()
     );
@@ -145,18 +150,19 @@ export async function getMarketNews() {
       return timeB - timeA;
     });
 
-    return sorted.slice(0, 10).map((n) => ({
+    const normalized: MarketNewsItem[] = sorted.slice(0, 10).map((n) => ({
       title: n.title,
       url: n.link,
       source: n.publisher,
-      time: n.providerPublishTime,
+      time: n.providerPublishTime ? new Date(n.providerPublishTime).getTime() : 0,
       image:
         n.thumbnail?.resolutions?.[0]?.url ||
         n.thumbnail?.resolutions?.[1]?.url ||
         null,
     }));
+    return normalized;
   } catch (err) {
     console.error("Yahoo news error:", err);
-    return [];
+    throw err; 
   }
 }

@@ -2,8 +2,9 @@
 
 import React from "react";
 import { useMarketNews } from "@/features/stock/hooks/useStockData";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Clock, Newspaper } from "lucide-react";
+import { MarketNewsSkeleton } from "./skeletons/MarketNewsSkeleton";
+import type { MarketNewsItem } from "@/features/stock/types";
 
 export function MarketNews() {
   const { data: news, isLoading, isError } = useMarketNews();
@@ -18,26 +19,31 @@ export function MarketNews() {
       </div>
 
       <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-        {isLoading || isError ? (
+        {isLoading ? (
           // Skeletons
-          [1, 2, 3].map((i) => (
-            <div key={i} className="flex gap-4 pb-4 border-b border-gray-50 last:border-0">
-              <Skeleton className="w-24 h-16 rounded-lg shrink-0" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-20" />
-              </div>
-            </div>
-          ))
+          <MarketNewsSkeleton count={3} />
+
+        ) : isError ? (
+          // Error State
+          <div className="p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm border border-red-100">
+            <p className="font-semibold">ไม่สามารถเชื่อมต่อข้อมูลข่าวได้</p>
+            <p className="text-red-400 mt-1">กรุณารอสักครู่แล้วลองใหม่อีกครั้ง</p>
+          </div>
+
+        ) : news?.length === 0 ? (
+          // Empty State 
+          <div className="p-4 bg-gray-50 text-gray-500 rounded-xl text-center text-sm">
+            ไม่มีข่าวสารที่เกี่ยวข้องในขณะนี้
+          </div>
+
         ) : (
-          news?.slice(0, 10).map((item: any, index: number) => {
+          news?.slice(0, 10).map((item: MarketNewsItem, index: number) => {
             const date = new Date(item.time);
             const dateString = isNaN(date.getTime()) ? "" : date.toLocaleDateString();
 
             return (
               <a 
-                key={item.uuid || index} 
+                key={item.url || index} 
                 href={item.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -70,6 +76,7 @@ export function MarketNews() {
                   </div>
                 </div>
               </a>
+              
             );
           })
         )}

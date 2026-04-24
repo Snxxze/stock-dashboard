@@ -10,18 +10,13 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-
-const INDICES = [
-  { symbol: "^GSPC", name: "S&P 500" },
-  { symbol: "^IXIC", name: "Nasdaq" },
-  { symbol: "^DJI", name: "Dow Jones" },
-];
+import { MARKET_INDICES } from "../constants";
+import { IndexCardSkeleton } from "./skeletons/IndexCardSkeleton";
 
 export function MarketIndices() {
   const { data, isLoading, isError } = useBatchStockData(
-    INDICES.map((i) => i.symbol),
+    MARKET_INDICES.map((i) => i.symbol),
     "1D"
   );
 
@@ -29,7 +24,7 @@ export function MarketIndices() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      {INDICES.map((index) => {
+      {MARKET_INDICES.map((index) => {
         const stock = data?.[index.symbol];
 
         if (isLoading || !stock) {
@@ -126,17 +121,6 @@ function IndexCard({ name, stock, symbol }: any) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-    </div>
-  );
-}
-
-function IndexCardSkeleton() {
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-3 shadow-sm">
-      <Skeleton className="h-4 w-20" />
-      <Skeleton className="h-8 w-32" />
-      <Skeleton className="h-4 w-24" />
-      <Skeleton className="h-16 w-full mt-4" />
     </div>
   );
 }
