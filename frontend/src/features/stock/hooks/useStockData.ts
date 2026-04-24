@@ -1,4 +1,4 @@
-﻿import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { StockData, Timeframe } from "@/features/stock/types";
 import { apiClient } from "@/lib/api-client";
 
@@ -39,3 +39,42 @@ export function useBatchStockData(symbols: string[], timeframe: Timeframe) {
   });
 }
 
+// ดึงข้อมูลหุ้นที่กำลังมาแรง
+export function useTrendingStocks() {
+  return useQuery({
+    queryKey: ["stocks", "trending", "v2"],
+    queryFn: () => apiClient.get<Record<string, StockData>>("/trending"),
+    staleTime: 5 * 60_000,
+    refetchInterval: 5 * 60_000,
+  });
+}
+
+// ดึงข้อมูลข่าวสารตลาด
+type MarketNewsParams = {
+  query?: string;      
+  limit?: number;      
+  category?: string;   
+};
+
+export function useMarketNews(params?: MarketNewsParams) {
+  return useQuery({
+    queryKey: ["news", "market", params],
+    queryFn: () => {
+      const queryParams: Record<string, string> = {};
+      if (params?.query) queryParams.q = params.query;
+      if (params?.limit) queryParams.limit = params.limit.toString();
+      else queryParams.limit = "10";
+      if (params?.category) queryParams.category = params.category;
+      
+      return apiClient.get<any[]>("/news", queryParams);
+    },
+    staleTime: 15 * 60_000, // ข่าวไม่ต้องอัปเดตบ่อยมาก เก็บไว้ 15 นาที
+  });
+}
+
+export function useIndexNews() {
+  return useMarketNews({
+    query: "S&P 500 Nasdaq Dow Jones",
+    limit: 10,
+  });
+}
