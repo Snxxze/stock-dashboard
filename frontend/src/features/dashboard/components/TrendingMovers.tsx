@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { useTrendingStocks } from "@/features/stock/hooks/useStockData";
 import { formatPrice } from "@/lib/formatters";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TrendingMoversSkeleton } from "./skeletons/TrendingMoversSkeleton";
 import { TrendingUp, TrendingDown, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
 
@@ -57,13 +57,8 @@ export function TrendingMovers() {
 
         {isLoading || isError ? (
           // Skeletons
-          Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="min-w-[240px] bg-white p-5 rounded-2xl border border-gray-100 shadow-sm shrink-0 snap-start">
-              <Skeleton className="h-6 w-16 mb-4" />
-              <Skeleton className="h-8 w-24 mb-2" />
-              <Skeleton className="h-4 w-12" />
-            </div>
-          ))
+          <TrendingMoversSkeleton count={10} />
+          
         ) : (
           Object.values(data || {}).map((stock) => {
             const isPositive = stock.change >= 0;

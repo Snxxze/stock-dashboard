@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { StockData, Timeframe } from "@/features/stock/types";
+import type { StockData, Timeframe, MarketNewsItem } from "@/features/stock/types";
 import { apiClient } from "@/lib/api-client";
 
 // ดึงข้อมูลจาก API
@@ -66,7 +66,7 @@ export function useMarketNews(params?: MarketNewsParams) {
       else queryParams.limit = "10";
       if (params?.category) queryParams.category = params.category;
       
-      return apiClient.get<any[]>("/news", queryParams);
+      return apiClient.get<MarketNewsItem[]>("/news", queryParams);
     },
     staleTime: 15 * 60_000, // ข่าวไม่ต้องอัปเดตบ่อยมาก เก็บไว้ 15 นาที
   });
